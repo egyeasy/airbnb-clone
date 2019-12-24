@@ -22,7 +22,7 @@
                 "sha256:deb70aa038e59b58593673b15e9a711d1e5ccd941b5973b30750d5d026abfd56"
             ],
             "index": "pypi",
-            "version": "==2.2.5"
+            "version": "==2.2.8"
         },
         "entrypoints": {
             "hashes": [
