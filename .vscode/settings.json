@@ -1,8 +1,0 @@
-{
-    // python pipenv
-    // "python.pythonPath": "airbnb-clone-vYuaC5SI\Scripts\python.exe",
-    // "python.linting.flake8Enabled": true,
-    // "python.linting.flake8Path": "airbnb-clone-vyuac5si\lib\site-packages\flake8",
-    // "python.linting.pylintEnabled": false,
-    // "python.linting.enabled": true,
-}
