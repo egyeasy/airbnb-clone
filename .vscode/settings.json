@@ -10,7 +10,7 @@
         "**/*.pyc": true,
         "**/__pycache__": true
     },
-    "python.pythonPath": "/Users/dongyoung/.local/share/virtualenvs/dongyoung-nmPUEcLX/bin/python",
+    "python.pythonPath": "C:\\Users\\dongyoung\\.virtualenvs\\airbnb-clone-YzP_jNe_\\Scripts\\python.exe",
     "python.linting.pylintEnabled": false,
     "python.linting.flake8Enabled": true,
     "python.linting.enabled": true,
