@@ -37,7 +37,9 @@ DJANGO_APPS = [
 ]
 
 PROJECT_APPS = [
+    "core.apps.CoresConfig",
     "users.apps.UsersConfig",
+    "rooms.apps.RoomsConfig"
 ]
 
 # Application definition

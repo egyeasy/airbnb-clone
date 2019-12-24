@@ -1,22 +1,8 @@
 {
-    "git.ignoreLimitWarning": true,
-    // pipenv setting
-    "files.exclude": {
-        "**/.git": true,
-        "**/.svn": true,
-        "**/.hg": true,
-        "**/CVS": true,
-        "**/.DS_Store": true,
-        "**/*.pyc": true,
-        "**/__pycache__": true
-    },
-    "python.pythonPath": "C:\\Users\\dongyoung\\.virtualenvs\\airbnb-clone-YzP_jNe_\\Scripts\\python.exe",
-    "python.linting.pylintEnabled": false,
-    "python.linting.flake8Enabled": true,
-    "python.linting.enabled": true,
-    "python.globalModuleInstallation": true,
-    "python.formatting.provider": "black",
-    "python.linting.flake8Args": [
-        "--max-line-length=88"
-    ]
+    // python pipenv
+    // "python.pythonPath": "airbnb-clone-vYuaC5SI\Scripts\python.exe",
+    // "python.linting.flake8Enabled": true,
+    // "python.linting.flake8Path": "airbnb-clone-vyuac5si\lib\site-packages\flake8",
+    // "python.linting.pylintEnabled": false,
+    // "python.linting.enabled": true,
 }
