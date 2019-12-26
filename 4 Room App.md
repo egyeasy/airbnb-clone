@@ -104,6 +104,8 @@ class Room(core_models.TimeStampedModel):
 
 
 
+## 4.1 Room Model part One
+
 
 
 
