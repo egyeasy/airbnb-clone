@@ -237,17 +237,122 @@ migrate
 
 ## 4.2 Foreign Keys like a Boss
 
+### 1 대 N 관계
+
+Room의 foreign key는 user. 하나의 필드인데 다른 모델의 id를 가리키고 있음
 
 
 
 
 
+## 4.3 ManyToMany like a Boss
+
+django에서는 model의 이름을 string으로 바꾼다. 그걸 커스터마이즈 할 수 있다.
+
+```python
+# Create your models here.
+class Room(core_models.TimeStampedModel):
+
+    """ Room Model Definition """
+
+    name = models.CharField(max_length=140)
+    description = models.TextField()
+    country = CountryField()
+    city = models.CharField(max_length=80)
+    price = models.IntegerField()
+    address = models.CharField(max_length=140)
+    guests = models.IntegerField()
+    beds = models.IntegerField()
+    bedrooms = models.IntegerField()
+    baths = models.IntegerField()
+    check_in = models.TimeField()
+    check_out = models.TimeField()
+    instant_book = models.BooleanField(default=False)
+    host = models.ForeignKey(user_models.User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+```
+
+
+
+### Many to Many relationship
+
+형제자매가 서로 형제자매를 N명 가질 수 있다.
+
+
+
+일단 house type model부터 만들어보도록 하자.(필터)
+
+```python
+class AbstractItem(core_models.TimeStampedModel):
+
+    """ Abstract Item """
+
+    name = models.CharField(max_length=80)
+
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return self.name
+
+
+class RoomType(AbstractItem):
+    pass
+
+```
+
+
+
+many to many로 추가
+
+```python
+# Create your models here.
+class Room(core_models.TimeStampedModel):
+
+    """ Room Model Definition """
+
+    name = models.CharField(max_length=140)
+    description = models.TextField()
+    country = CountryField()
+    city = models.CharField(max_length=80)
+    price = models.IntegerField()
+    address = models.CharField(max_length=140)
+    guests = models.IntegerField()
+    beds = models.IntegerField()
+    bedrooms = models.IntegerField()
+    baths = models.IntegerField()
+    check_in = models.TimeField()
+    check_out = models.TimeField()
+    instant_book = models.BooleanField(default=False)
+    host = models.ForeignKey(user_models.User, on_delete=models.CASCADE)
+    room_type = models.ManyToManyField(RoomType, blank=True)
+```
+
+
+
+migrate
+
+
+
+어드민을 바꿔보자
+
+```python
+
+@admin.register(models.RoomType)
+class ItemAdmin(admin.ModelAdmin):
+    pass
+
+```
+
+이러면 room type을 admin에서 볼 수 있어진다. 그리고 admin 페이지에서 새롭게 room type을 생성할 수 있게 된다
 
 
 
 
 
-
+abstract item을 만들어준 것은 구체적인 내용만 다를 뿐 item이 필요하기 때문
 
 
 
