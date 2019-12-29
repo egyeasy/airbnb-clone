@@ -358,6 +358,262 @@ abstract item을 만들어준 것은 구체적인 내용만 다를 뿐 item이 �
 
 
 
+## 4.4 on_delete, Amenity, Facility, HouseRule Models
+
+### on_delete
+
+User가 삭제되었을 때, User를 foreign key로 가지고 있는 room까지 삭제된다. 폭포수와 같은 것.
+
+PROTECT 옵션은 남아있는 room이 있을 때 user를 삭제할 수 없음. room을 삭제해야 user를 삭제 가능하다.
+
+SET_NULL : user가 없어지면 room의 foreign key는 null이 됨
+
+
+
+many to many에는 on_delete 옵션이 없다. 어차피 많은 개체랑 연결될 수 있기 때문
+
+
+
+### Amenity
+
+```python
+class RoomType(AbstractItem):
+    
+    """ RoomType Object Definition """
+
+    pass
+
+class Amenity(AbstractItem):
+
+    """ Amenity Object Definition """
+
+    pass
+
+
+class Room(core_models.TimeStampedModel):
+
+    """ Room Model Definition """
+
+    name = models.CharField(max_length=140)
+    description = models.TextField()
+    country = CountryField()
+    city = models.CharField(max_length=80)
+    price = models.IntegerField()
+    address = models.CharField(max_length=140)
+    guests = models.IntegerField()
+    beds = models.IntegerField()
+    bedrooms = models.IntegerField()
+    baths = models.IntegerField()
+    check_in = models.TimeField()
+    check_out = models.TimeField()
+    instant_book = models.BooleanField(default=False)
+    host = models.ForeignKey(user_models.User, on_delete=models.CASCADE)
+    room_type = models.ForeignKey(RoomType, on_delete=models.SET_NULL, null=True)
+    amenity = models.ManyToManyField(Amenity)
+```
+
+룸타입은 foreign key로 수정
+
+
+
+### Facility, HouseRule
+
+```python
+class Facility(AbstractItem):
+
+    """ Facilitiy Model Definition """
+
+    pass
+
+class HouseRule(AbstractItem):
+
+    """ HouseRule Model Definition """
+
+    pass
+
+class Room(core_models.TimeStampedModel):
+
+    """ Room Model Definition """
+
+    name = models.CharField(max_length=140)
+    description = models.TextField()
+    country = CountryField()
+    city = models.CharField(max_length=80)
+    price = models.IntegerField()
+    address = models.CharField(max_length=140)
+    guests = models.IntegerField()
+    beds = models.IntegerField()
+    bedrooms = models.IntegerField()
+    baths = models.IntegerField()
+    check_in = models.TimeField()
+    check_out = models.TimeField()
+    instant_book = models.BooleanField(default=False)
+    host = models.ForeignKey(user_models.User, on_delete=models.CASCADE)
+    room_type = models.ForeignKey(RoomType, on_delete=models.SET_NULL, null=True)
+    amenities = models.ManyToManyField(Amenity)
+    facilities = models.ManyToManyField(Facility)
+    house_rules = models.ManyToManyField(HouseRule)
+```
+
+
+
+migrate
+
+
+
+### admin에 등록
+
+```python
+from django.contrib import admin
+from . import models
+
+@admin.register(models.RoomType, models.Facility, models.Amenity, models.HouseRule)
+class ItemAdmin(admin.ModelAdmin):
+    pass
+
+# Register your models here.
+@admin.register(models.Room)
+class RoomAdmin(admin.ModelAdmin):
+    pass
+```
+
+register를 동시에 여러개 가능하다.
+
+
+
+
+
+## 4.5 Meta Class and Photos Model
+
+### verbose name
+
+Amenitys라고 잘못 복수형을 붙이는걸 고쳐보다.
+
+class Meta를 사용한다
+
+
+
+#### models.py
+
+```python
+class RoomType(AbstractItem):
+    
+    """ RoomType Model Definition """
+
+    class Meta:
+        verbose_name_plural = "Room Types"
+
+class Amenity(AbstractItem):
+
+    """ Amenity Model Definition """
+
+    class Meta:
+        verbose_name_plural = "Amenities"
+
+
+class Facility(AbstractItem):
+
+    """ Facilitiy Model Definition """
+
+    class Meta:
+        verbose_name_plural = "Facilities"
+
+class HouseRule(AbstractItem):
+
+    """ HouseRule Model Definition """
+
+    class Meta:
+        verbose_name_plural = "House Rules"
+```
+
+
+
+### ordering
+
+created, -created, alphabet 등 가능
+
+```python
+class RoomType(AbstractItem):
+    
+    """ RoomType Model Definition """
+
+    class Meta:
+        verbose_name_plural = "Room Types"
+        ordering = ['created'] # order one is first
+```
+
+
+
+### blank=True
+
+직접 추가해줄 때 문제가 발생하므로 비우는 것도 가능하도록 설정
+
+```python
+    amenities = models.ManyToManyField(Amenity, blank=True)
+    facilities = models.ManyToManyField(Facility, blank=True)
+    house_rules = models.ManyToManyField(HouseRule, blank=True)
+```
+
+
+
+### photo
+
+photo는 room에 링크된다. room은 user에 링크된다.
+
+```python
+class Photo(core_models.TimeStampedModel):
+
+    """ Photo Model Definition """
+    
+    caption = models.CharField(max_length=80)
+    file = models.ImageField()
+    model = models.ForeignKey("Room", on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.caption
+```
+
+Room을 String화 하여 넣을 수 있다. 이렇게 하면 굳이 Room 뒤에 Photo를 정의할 필요도 없음
+
+이렇게 되면 import 할 필요도 없다.
+
+
+
+```python
+    host = models.ForeignKey("users.User", on_delete=models.CASCADE)
+    room_type = models.ForeignKey("RoomType", on_delete=models.SET_NULL, null=True)
+    amenities = models.ManyToManyField("Amenity", blank=True)
+    facilities = models.ManyToManyField("Facility", blank=True)
+    house_rules = models.ManyToManyField("HouseRule", blank=True)
+```
+
+유저는 유저 앱에서 가져와야 한다.
+
+
+
+포토는 다른 어드민이 있다.
+
+```python
+@admin.register(models.Photo)
+class PhotoAdmin(admin.ModelAdmin):
+
+    """ Photo Admin Definition """
+
+    pass
+```
+
+
+
+migrate
+
+
+
+
+
+
+
+
+
 
 
 
